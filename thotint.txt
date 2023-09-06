@@ -216,3 +216,184 @@ Soft State: Unlike the rigid consistency model of ACID, BASE allows for soft sta
 Eventually Consistent: BASE systems prioritize eventual consistency over immediate consistency. In other words, the data will eventually become consistent across all nodes, but there may be a delay or temporary inconsistency.
 
 BASE is often chosen for distributed systems that can tolerate some level of inconsistency or are more focused on high availability and partition tolerance, as opposed to strict consistency like ACID systems
+
+
+a) To add the drones DRO123 and DRO456 to the set DRONESET, you can use the following Redis command:
+SADD DRONESET DRO123 DRO456
+b) To store the sensor data for the drone with code "DRO123" in a hash, you can use the following Redis commands:
+HSET Sensor:S456 "Sensor Type" "Temperature"
+HSET Sensor:S456 "Sensor Range" 5
+HSET Sensor:S456 "Drone Code" "DRO123"
+
+These commands create a hash named "Sensor:S456" and set the sensor type, sensor range, and drone code as key-value pairs within the hash.
+
+c) To store the timestamps for the drone DRO123 in a list called SENSORTIMESTAMP:DRO123, you can use the following Redis commands:
+
+LPUSH SENSORTIMESTAMP:DRO123 "2022-08-19 12:17:55"
+LPUSH SENSORTIMESTAMP:DRO123 "2022-08-19 12:17:56"
+These commands use the LPUSH command to insert the timestamps at the beginning of the list for the specified drone.
+
+d) To list all timestamp data for drone DRO456, you can use the LRANGE command. Here's how you can do it:
+
+LRANGE SENSORTIMESTAMP:DRO456 0 -1
+This command retrieves all timestamps in the list named SENSORTIMESTAMP:DRO456 for drone DRO456. The "0" and "-1" parameters indicate that you want to retrieve all elements in the list.
+
+a.	Insert all the data.
+
+HSET Employee:1:1 FirstName John LastName Doe Amount 50000 Date "2019/12/01" R_Address "22 SomeStreet,SomeSubrb,SomeTown,1234" P_Address "PO Box 1234567,SomeTown,123"
+HSET Employee:1:2 FirstName John LastName Doe Amount 20000 Date "2020/01/01" R_Address "22 SomeStreet,SomeSubrb,SomeTown,1234" " P_Address "PO Box 1234567,SomeTown,123"
+HSET Employee:2:3 FirstName Benjamin LastName Button Amount 75000 Date "2020/01/05" P_Address "167 Sycamore Bend,Whispering Oaks,4532"
+HSET Employee:3:4 FirstName Mycroft LastName Holmes Amount 40000 Date "2019/11/15" R_Address "1928 Rambling Road,Forever Town,13148"
+HSET Employee:3:5 FirstName Mycroft LastName Holmes Amount 20000 Date "2019/12/15" R_Address "1928 Rambling Road,Forever Town,13148"
+HSET Employee:3:6 FirstName Mycroft LastName Holmes Amount 25000 Date "2020/01/15" R_Address "1928 Rambling Road,Forever Town,13148"
+
+b. Confirm the existence of each of the structures you created.
+keys *Employee:[0-9]*
+HKEYS Employee:1:1
+HKEYS Employee:1:2
+HKEYS Employee:2:3
+HKEYS Employee:3:4
+HKEYS Employee:3:5
+HKEYS Employee:3:6
+
+c. Query each of your structures to get the data back that you inserted.
+
+HGETALL "Employee:1:1"
+HGETALL "Employee:1:2"
+HGETALL "Employee:2:3"
+HGETALL "Employee:3:4"
+HGETALL "Employee:3:5"
+HGETALL "Employee:3:6"
+
+d. Check the existence of the addresses of the employee with id 1.
+
+HExists "Employee:1:1" R_Address
+HExists "Employee:1:1" P_Address
+
+e. Return the employee data of the employee with id 3.
+
+HGETALL "Employee:3:4"
+HGETALL "Employee:3:5"
+HGETALL "Employee:3:6"
+
+Queries
+
+a. Create a new user
+	HSET User:1 Username TebohoM Password 12345 DateRegistered "2023/08/15"
+b.  Add a session for a user when he logs in
+	HSET User:1 SessionKey 68752 Timestamp "2023/08/16 13:26:00"
+c.  Remove user session when he logs out
+	HDEL User:1 SessionKey Timestamp
+d. Add new score for user to his score histories
+	HSET User:1 Score 40
+e. Add the score to the leaderboard
+	ZADD Leaderboard 40 "User:3"
+f.  Show the top 20 scores on the leaderboard
+ZREVRANGE Leaderboard 0 19 WITHSCORES
+
+
+1.	Create a database in MongoDB for the scenario.
+use passportApplicationsDB
+db.createCollection("passportApplications")
+2.	Add data to your databaseInsert all the data.
+db.passportApplications.insertMany([
+  {
+    applicationId: 1,
+    applicationDate: ISODate("2023-01-15"),
+    country: "USA",
+    status: "P",
+    issuedDate: ISODate("2023-02-10"),
+    expiryDate: ISODate("2033-02-10"),
+    person: {
+      name: "John",
+      surname: "Doe",
+      birthdate: ISODate("1985-03-20"),
+      nationality: "USA"
+    },
+    documents: {
+      identityDocument: "ID123",
+      proofOfAddress: "Proof456",
+      birthCertificate: "Birth789"
+    }
+  },
+  {
+    applicationId: 2,
+    applicationDate: ISODate("2023-02-20"),
+    country: "Canada",
+    status: "P",
+    person: {
+      name: "Emily",
+      surname: "Smith",
+      birthdate: ISODate("1990-08-12"),
+      nationality: "Canada"
+    },
+    documents: {
+      identityDocument: "ID234",
+      proofOfAddress: "Proof567",
+      birthCertificate: "Birth890"
+    }
+  },
+]);
+
+Update everyone with nationality “RSA” to “South African”
+db.passportApplications.updateMany(
+  { "person.nationality": "RSA" },
+  { $set: { "person.nationality": "South African" } }
+); 
+4. Write a query to select all applications with a status “P” for pending. Project all fields.
+db.passportApplications.find({ status: "P" });
+5. Change your query from Question 4 to project only the name and surname of the applicant and date of the applications. Remember to suppress the _id field
+db.passportApplications.find({ status: "P" }, { _id: 0, "person.name": 1, "person.surname": 1, applicationDate: 1 }); 
+6. Select all applications with a status “R” for rejected and that were applied for during this year.
+db.passportApplications.find({
+    status: "R",
+    applicationDate: {
+        $gte: ISODate("2023-01-01"),
+        $lt: ISODate("2024-01-01")
+    }
+});
+7. Delete all applications that have a status of D for dormant.
+db.passportApplications.deleteMany({ "status": "D" });
+
+1. Create a database in MongoDB for the scenario 
+use libraryDB
+db.createCollection("books")
+2.  Add data to your database 
+	db.books.insertMany([
+  {
+    ISBN: "9781234567890",
+    title: "Book 1",
+    numPages: 200,
+    price: 150,
+    publicationYear: 2020,
+    author: { name: "John", surname: "Doe" }
+  },
+  {
+    ISBN: "9782345678901",
+    title: "Book 2",
+    numPages: 300,
+    price: 80,
+    publicationYear: 2021,
+    author: { name: "Jane", surname: "Smith" }
+  }
+])
+
+3.  The publisher wishes to impose a minimum cost of R100 for a book. Change all books that currently cost less than R100, to R100.
+db.books.updateMany(
+  { price: { $lt: 100 } },
+  { $set: { price: 100 } }
+)
+4. Show only the title of all books that have more than 600 pages
+db.books.find(
+  { numPages: { $gt: 600 } },
+  { title: 1, _id: 0 }
+)
+5. Show the title and price of all books published in 2022
+db.books.find(
+  { publicationYear: 2022 },
+  { title: 1, price: 1, _id: 0 }
+)
+6.  Show all books (titles and publication year) for the author with name “Ken” and surname “Follett”
+db.books.find(
+  { "author.name": "Ken", "author.surname": "Follett" },
+  { title: 1, publicationYear: 1, _id: 0 }
