@@ -1,399 +1,298 @@
-3V’s of big data
-Volume 
-High volume  ‐ refers to the amount of data that is generated. The volume of big data overwhelms the 
-normal data warehouse.
--> Amout of data generated
--> Online & offline transations
--> in kilobytes or terabytes
--> Saved in records, tables,files
+a) To create nodes for the given examples in Neo4j:
 
-Variety 
-High variety ‐ refers to the types of data that is generated, in particular heterogeneous sources and the 
-nature of data. This allows you  to collect and  organize data sets that do not relate to each other putting 
-them together in one place and allow data experts to analyse and detect patterns and insights that you would not have seen otherwise.
-->Structured and unstructured
-->Online images and Videos
-->Human generated-texts 
-->Machine generated- readings 
+```cypher
+CREATE (p:Patient {
+    Id: '19801014548084',
+    FirstName: 'Jack',
+    LastName: 'Sparrow',
+    Age: 42
+})
 
-Velocity 
-High velocity ‐ refers to the speed at which data is generated. This allows companies to be immediate and 
-reactive, Companies not only have to master the huge volumes and variety but also have to deal with the 
-speed of data generation
--> Speed of generating data
--> Generated in real-time
--> Online and Offline data
--> In Streams, batch or bits
+CREATE (pharmacy:Pharmacy {
+    Name: 'Bloem Central Pharmacy',
+    Telephone: '0514013215',
+    City: 'Bloemfontein'
+})
 
-Big data value chain 
-The data acquisition activity is the process of gathering, filtering and cleaning data before it is put in a data 
-warehouse or any other storage solution on which data analysis can be carried out (Curry, 2016). 
+CREATE (medication:Medication {
+    Name: 'IbuProfen Max',
+    Type: 'Analgesic',
+    Strength: '20mg',
+    Schedule: 2
+})
+```
 
-Data analysis is concerned with making the raw data acquired amenable to use in decision‐making as well 
-as domain‐specific usage (Curry, 2016). 
+b) To create a relationship "PURCHASED" between Jack Sparrow and IbuProfen Max:
 
-Data curation is the active management of data over its lifecycle to ensure it meets the necessary data 
-quality requirements for its effective usage (Curry, 2016). 
+```cypher
+MATCH (p:Patient { FirstName: 'Jack', LastName: 'Sparrow' }), 
+      (m:Medication { Name: 'IbuProfen Max' })
+CREATE (p)-[:PURCHASED]->(m)
+```
 
-Data  storage is  the  persistence and management  of  data in a  scalable way  that  satisfies  the  needs  of 
-applications that require fast access to the data (Curry, 2016). 
+c) To find all the patients who bought IbuProfen Max:
 
-Data usage covers the data‐driven business activities that need access to data, its analysis and the tools 
-needed to integrate the data analysis within the business activity. 
+```cypher
+MATCH (p:Patient)-[:PURCHASED]->(m:Medication { Name: 'IbuProfen Max' })
+RETURN p
+```
 
-Non‐relational database technologies have the following common characteristics: 
- Scalability – capability to write data across multiple data store concurrently 
- Data and query model – use specialty frameworks to store data with a requisite set of specialty 
-query APIs to intelligently access data 
- Persistence design – due to high volume, velocity and variety of big data these databases use 
-different mechanisms for persisting data 
- Interface diversity – even as most of these technologies use RESTful APIs as their default 
-interface they will give you the option of numerous types of connection devices for 
-programmers and database managers, including analysis tools and reporting 
- Eventual consistency – while RDBMS uses ACID as a device for making sure data is consistent, 
-non‐relational DBMS use BASE. BASE stands for Basically Available, Soft State and Eventual 
-Consistency. Eventual consistency is in charge of conflict resolution when data is in motion 
-between nodes.
+d) To find all the medication names that have a schedule higher than 2:
 
-Types of big data 
-There are three types of big data, namely structured, semi‐structured and unstructured. 
-Structured data is data that can be stored or processed in a fixed format. For example, a table in a 
-database has a fixed format and structure. 
-Semi‐structured  data  is  a  form  of  structured  data  that  has  tags  or  markers  to  identify  elements.  For 
-example, XML or JSON is semi‐structured. 
-Unstructured data has internal structure but cannot be defined via models or a schema. This data can 
-come  from  sources  such as Facebook, Twitter and  video  content. This  data is  random and  difficult  to 
-analyse.
+```cypher
+MATCH (m:Medication)
+WHERE m.Schedule > 2
+RETURN m.Name
+```
 
-Big data analytics
-Basic analytics 
-In basic analytics you can explore your data especially if you know you have valuable data but are unsure 
-of its value. This might include simple visualisations or simple statistics. Basic analytics is often used for 
-large amounts of dissimilar data. 
-Slicing and dicing 
-Slicing and dicing refers to breaking down your data into smaller sets so that they are easier to search 
-through. 
-Basic monitoring 
-You might consider monitoring large volumes of data in real time 
-Anomaly identification 
-You could also identify irregularities such as an occurrence where actual observation is different  from 
-what you expected in your data. 
-Advanced analytics 
-When you move toward advanced analytics you would have to deal with algorithms for complex analysis 
-of  either  structured  or  unstructured  data.  You  would  need  sophisticated  statistical  models,  machine 
-learning, neural networks, text analytics and other advanced data‐mining techniques. Advanced analytics 
-can be deployed to find patterns in data, prediction, forecasting and complex event processing.  
-Predictive modelling 
-Predictive modelling is a statistical or data‐mining solution that consists of algorithms and techniques used 
-on both structured and unstructured data (together or individually) to determine future outcomes. 
-Text analytics 
-This is the process of analysing unstructured text, extracting relevant information and transforming it 
-into structured information that can then be leveraged in many ways. 
+e) To find all the pharmacies in Bloemfontein that supply IbuProfen Max:
 
-Three classes of technology that can store and manage big data are: 
- NewSQL – a form of relational databases that aim to scale as easily as NoSQL databases 
- NoSQL – these use data modules from outside the relational world that do not necessarily 
-adhere to ACID 
- Distributed file systems such as Hadoop file system 
- Massive Parallel Processing (MPP)  
+```cypher
+MATCH (pharmacy:Pharmacy { City: 'Bloemfontein' })-[:SUPPLIES]->(m:Medication { Name: 'IbuProfen Max' })
+RETURN pharmacy
+```
 
-JSON 
-What is JSON? 
-JSON  stands  for  JavaScript Object Notation and is a  standard  text‐based  format  for  representing  data 
-based on JavaScript object syntax. Although it closely resembles JavaScript, it can be used independently 
-of JavaScript. Many NoSQL databases uses JSON to query data. 
-JSON exists as a string and needs to be converted to a native JavaScript object when you want to access 
-data. 
+a) To create a node for each of the examples given, you can use the following Neo4j commands:
 
-NoSQL 
-NoSQL stands for Not Only SQL and is among the best technologies for handling large amounts of data. 
-NoSQL is a non‐relational DBMS that does not require a schema, avoids joins and scales easily. These data 
-stores provide domain‐specific access and query techniques in addition to SQL or SQL‐like interfaces. 
-Characteristics of NoSQL databases 
- Distributed computing 
-These  databases  are  distributed,  can  scale  horizontally  and  handle  volumes  of  data  with  low  latency. 
-NoSQL databases use clusters, groups of computers to store and support database operations. Therefore, 
-horizontal scaling, adding more nodes to the distributed database, is possible with these databases.  
- More flexible data model 
-NoSQL databases are not  relational. Instead  they  use  flexible  data models  such as key‐value  stores or 
-document stores. The types of NoSQL databases will be discussed in more detail in a later section. 
- Asynchronous inserts and updates 
-Full transactional guarantees and simultaneous completion of transactions at all nodes in the distributed 
-environment are not provided by NoSQL databases. Instead it guarantees the availability of the data at 
-the distributed level (by some internal process of synchronization). 
- Query language 
-NoSQL databases can support SQL‐like query languages and some have support additional languages like 
-JSON to store data or JavaScript as a query language. 
- No Joins 
-NoSQL databases do not support conventional joins 
- Low Cost 
-As previously mentioned, they make use of clusters. These clusters are comprised of commodity servers 
-and not proprietary servers. 
- Easy implementation 
-They provide flexible schemas and less complicated relationships than a relational database.
+```cypher
+CREATE (:Patient {
+  Id: 19801014548084,
+  FirstName: "Jack",
+  LastName: "Sparrow",
+  Age: 42
+})
 
-Advantages of NoSQL databases 
-Data models 
-NoSQL databases leverage data models  to  suit  the  specific use  case, making  them more  suitable  than 
-relational databases. For example, key‐value databases support simple queries very efficiently while graph 
-databases are the best for queries that involve identifying complex relationships between separate pieces 
-of data. 
-Performance 
-No SQL databases often perform better than relational databases in terms of query performance as well 
-as development time. For example, data required to service a query might only need to be retrieved from 
-a single place instead of requiring multiple joins as with a relational database. 
-Scalability 
-While  SQL  databases  were  intended  to  be  scalable,  the  scalability  options  are  often  expensive  and 
-complicated. With NoSQL databases, the design was meant to scale out horizontally from the start and 
-performance is easily maintained as you are not limited to a single server. 
-Data distribution 
-NoSQL  databases are  designed  from  the  ground  up  as  distributed databases  and  can  therefore easily 
-support a variety of different business requirements. 
-Reliability 
-NoSQL databases ensure high availability and uptime with native replication and built‐in failover for self‐
-healing, resilient database clusters. Similar failover systems can be set up for SQL databases but since the 
-functionality is not native  to  the underlying database,  this often means more  resources  to deploy and 
-maintain  a  separate  clustering  layer  that  then  takes  longer  to  identify  and  recover  from  underlying 
-systems failures. 
-Flexibility 
-NoSQL databases are better at allowing users to test new ideas and update data structures. For example, 
-MongoDB, the leading document database, stores data in flexible, JSON‐like documents, meaning fields 
-can  vary  from  document  to  document  and  the  data  structures  can  be  easily  changed  over  time,  as 
-application  requirements  evolve.  This  is  a  better  fit  for  modern  microservices  architectures  where 
-developers are continuously integrating and deploying new application functionality. 
+CREATE (:Pharmacy {
+  Name: "Bloem Central Pharmacy",
+  Telephone: 0514013215,
+  City: "Bloemfontein"
+})
 
-Disadvantages of NoSQL databases 
-The disadvantages of NoSQL databases are: 
- Too many options 
- Limited query capabilities 
- Eventual consistency is not intuitive to programme for strict scenarios like banking applications 
- Lacks joins, group by, order by facilities 
- ACID transactions 
- Limited guarantee of support due to being open source 
+CREATE (:Medication {
+  Name: "IbuProfen Max",
+  Type: "Analgesic",
+  Strength: "20mg",
+  Schedule: 2
+})
+```
 
-Types of NoSQL databases 
-There are four types of NoSQL databases: 
- Key‐value stores 
- Document‐based store 
- Column‐based store 
- Graph‐based
+b) To create a relationship "PURCHASED" between Jack Sparrow and IbuProfen Max, you can use the following command:
 
-ACID (Atomicity, Consistency, Isolation, Durability):
+```cypher
+MATCH (p:Patient {FirstName: "Jack", LastName: "Sparrow"})
+MATCH (m:Medication {Name: "IbuProfen Max"})
+CREATE (p)-[:PURCHASED]->(m)
+```
 
-ACID is a set of properties that guarantee the reliable processing of database transactions. Here's a brief explanation of each component:
+c) To find all the patients who bought IbuProfen Max, you can use the following command:
 
-Atomicity: This property ensures that a transaction is treated as a single, indivisible unit. Either all the changes within a transaction are applied, or none of them are. If any part of the transaction fails, the entire transaction is rolled back to its previous state.
+```cypher
+MATCH (p:Patient)-[:PURCHASED]->(m:Medication {Name: "IbuProfen Max"})
+RETURN p
+```
 
-Consistency: Consistency guarantees that a transaction brings the database from one valid state to another. It enforces predefined rules and constraints, ensuring that the data remains accurate and follows the intended business rules.
+d) To find all the medication names with a schedule higher than 2, you can use the following command:
 
-Isolation: Isolation ensures that multiple concurrent transactions do not interfere with each other. Each transaction should appear to run in isolation, even when multiple transactions are executed simultaneously. Isolation levels, such as Read Committed or Serializable, control the level of isolation between transactions.
+```cypher
+MATCH (m:Medication)
+WHERE m.Schedule > 2
+RETURN m.Name
+```
 
-Durability: Durability guarantees that once a transaction is committed, its changes are permanent and will survive any system failures (e.g., power outage or hardware failure). Data changes are stored persistently, typically in non-volatile storage like disk.
+e) To find all pharmacies in Bloemfontein that supply IbuProfen Max, you can use the following command:
 
-CAP Theorem (Consistency, Availability, Partition Tolerance):
+```cypher
+MATCH (p:Pharmacy {City: "Bloemfontein"})-[:SUPPLIES]->(m:Medication {Name: "IbuProfen Max"})
+RETURN p
+```
 
-The CAP theorem is a concept in distributed computing that states that it's impossible for a distributed system to simultaneously achieve all three of the following attributes:
+You would need to create a relationship, such as "SUPPLIES," between pharmacies and medications to represent the supply relationship.
+1.	Visualization of the graph in Neo4j
+// Create Readers
+CREATE (reader1:Reader {name: "John", surname: "Doe"})
+CREATE (reader2:Reader {name: "Alice", surname: "Smith"})
+CREATE (reader3:Reader {name: "Bob", surname: "Johnson"})
+CREATE (reader4:Reader {name: "Emily", surname: "Brown"})
+CREATE (reader5:Reader {name: "David", surname: "Wilson"})
 
-Consistency: Every read operation in the system returns the most recent write operation's value. In other words, all nodes in the system see the same data.
+// Create Books
+CREATE (book1:Book {title: "Book A", genre: "Fiction", pages: 300, publicationYear: 2010})
+CREATE (book2:Book {title: "Book B", genre: "Mystery", pages: 450, publicationYear: 2017})
+CREATE (book3:Book {title: "Book C", genre: "Science Fiction", pages: 1200, publicationYear: 2020})
+CREATE (book4:Book {title: "Book D", genre: "Romance", pages: 600, publicationYear: 2018})
+CREATE (book5:Book {title: "Book E", genre: "Fantasy", pages: 800, publicationYear: 2022})
 
-Availability: Every request (read or write) made to the system receives a response, without guaranteeing that it contains the most recent data.
+// Create Relationships
+CREATE (reader1)-[:READING]->(book2)
+CREATE (reader1)-[:READ]->(book1)
+CREATE (reader2)-[:WANT_TO_READ]->(book4)
+CREATE (reader3)-[:READ]->(book2)
+CREATE (reader4)-[:WANT_TO_READ]->(book5)
+CREATE (book2)-[:SEQUEL_TO]->(book1)
+CREATE (book4)-[:SEQUEL_TO]->(book3)
+CREATE (book5)-[:SEQUEL_TO]->(book2)  
 
-Partition Tolerance: The system continues to function correctly even when network partitions (communication failures) occur between nodes, meaning some nodes are unable to communicate with each other.
+      
+     
 
-The CAP theorem suggests that in a distributed system, you can achieve at most two out of these three attributes simultaneously. For example:
-
-If you prioritize Consistency and Availability, your system may not be tolerant of network partitions (CA).
-If you prioritize Availability and Partition Tolerance, you may have eventual consistency, meaning data might not be immediately consistent across all nodes (AP).
-If you prioritize Consistency and Partition Tolerance, you may sacrifice immediate availability in certain scenarios (CP).
-BASE (Basically Available, Soft State, Eventually Consistent):
-
-BASE is an alternative approach to distributed system design that contrasts with the strict consistency model of ACID. Here's a brief explanation of each component:
-
-Basically Available: This means the system remains operational most of the time, but it doesn't guarantee 100% availability. It acknowledges that there may be temporary failures or inconsistencies.
-
-Soft State: Unlike the rigid consistency model of ACID, BASE allows for soft states where data might be inconsistent for a short period. Soft state acknowledges that during system transitions, data can be in an intermediate or changing state.
-
-Eventually Consistent: BASE systems prioritize eventual consistency over immediate consistency. In other words, the data will eventually become consistent across all nodes, but there may be a delay or temporary inconsistency.
-
-BASE is often chosen for distributed systems that can tolerate some level of inconsistency or are more focused on high availability and partition tolerance, as opposed to strict consistency like ACID systems
-
-
-a) To add the drones DRO123 and DRO456 to the set DRONESET, you can use the following Redis command:
-SADD DRONESET DRO123 DRO456
-b) To store the sensor data for the drone with code "DRO123" in a hash, you can use the following Redis commands:
-HSET Sensor:S456 "Sensor Type" "Temperature"
-HSET Sensor:S456 "Sensor Range" 5
-HSET Sensor:S456 "Drone Code" "DRO123"
-
-These commands create a hash named "Sensor:S456" and set the sensor type, sensor range, and drone code as key-value pairs within the hash.
-
-c) To store the timestamps for the drone DRO123 in a list called SENSORTIMESTAMP:DRO123, you can use the following Redis commands:
-
-LPUSH SENSORTIMESTAMP:DRO123 "2022-08-19 12:17:55"
-LPUSH SENSORTIMESTAMP:DRO123 "2022-08-19 12:17:56"
-These commands use the LPUSH command to insert the timestamps at the beginning of the list for the specified drone.
-
-d) To list all timestamp data for drone DRO456, you can use the LRANGE command. Here's how you can do it:
-
-LRANGE SENSORTIMESTAMP:DRO456 0 -1
-This command retrieves all timestamps in the list named SENSORTIMESTAMP:DRO456 for drone DRO456. The "0" and "-1" parameters indicate that you want to retrieve all elements in the list.
-
-a.	Insert all the data.
-
-HSET Employee:1:1 FirstName John LastName Doe Amount 50000 Date "2019/12/01" R_Address "22 SomeStreet,SomeSubrb,SomeTown,1234" P_Address "PO Box 1234567,SomeTown,123"
-HSET Employee:1:2 FirstName John LastName Doe Amount 20000 Date "2020/01/01" R_Address "22 SomeStreet,SomeSubrb,SomeTown,1234" " P_Address "PO Box 1234567,SomeTown,123"
-HSET Employee:2:3 FirstName Benjamin LastName Button Amount 75000 Date "2020/01/05" P_Address "167 Sycamore Bend,Whispering Oaks,4532"
-HSET Employee:3:4 FirstName Mycroft LastName Holmes Amount 40000 Date "2019/11/15" R_Address "1928 Rambling Road,Forever Town,13148"
-HSET Employee:3:5 FirstName Mycroft LastName Holmes Amount 20000 Date "2019/12/15" R_Address "1928 Rambling Road,Forever Town,13148"
-HSET Employee:3:6 FirstName Mycroft LastName Holmes Amount 25000 Date "2020/01/15" R_Address "1928 Rambling Road,Forever Town,13148"
-
-b. Confirm the existence of each of the structures you created.
-keys *Employee:[0-9]*
-HKEYS Employee:1:1
-HKEYS Employee:1:2
-HKEYS Employee:2:3
-HKEYS Employee:3:4
-HKEYS Employee:3:5
-HKEYS Employee:3:6
-
-c. Query each of your structures to get the data back that you inserted.
-
-HGETALL "Employee:1:1"
-HGETALL "Employee:1:2"
-HGETALL "Employee:2:3"
-HGETALL "Employee:3:4"
-HGETALL "Employee:3:5"
-HGETALL "Employee:3:6"
-
-d. Check the existence of the addresses of the employee with id 1.
-
-HExists "Employee:1:1" R_Address
-HExists "Employee:1:1" P_Address
-
-e. Return the employee data of the employee with id 3.
-
-HGETALL "Employee:3:4"
-HGETALL "Employee:3:5"
-HGETALL "Employee:3:6"
-
+2.	Find all books published after 2015 with their title and genre:
+MATCH (b:Book)
+WHERE b.publicationYear > 2015
+RETURN b.title, b.genre
+3.	Count the number of books that have more than 1000 pages:
+MATCH (b:Book)
+WHERE b.pages > 1000
+RETURN count(b) AS numberOfBooks 
+4. List the titles of the books a specific reader (e.g., John Doe)
+MATCH (reader:Reader {name: "John", surname: "Doe"})-[:WANT_TO_READ]->(book:Book)
+RETURN book.title
+5. Show the sequel of a specific book (e.g., "Book A"):
+MATCH (book1:Book {title: "Book A"})-[:SEQUEL_TO]->(sequel:Book)
+RETURN sequel.title)
+Scenario B
 Queries
 
-a. Create a new user
-	HSET User:1 Username TebohoM Password 12345 DateRegistered "2023/08/15"
-b.  Add a session for a user when he logs in
-	HSET User:1 SessionKey 68752 Timestamp "2023/08/16 13:26:00"
-c.  Remove user session when he logs out
-	HDEL User:1 SessionKey Timestamp
-d. Add new score for user to his score histories
-	HSET User:1 Score 40
-e. Add the score to the leaderboard
-	ZADD Leaderboard 40 "User:3"
-f.  Show the top 20 scores on the leaderboard
-ZREVRANGE Leaderboard 0 19 WITHSCORES
+1. Visualization of the graph in Neo4j:
+// Create Games
+CREATE (game1:Game {name: "Game X", genre: "Action", players: 2, platform: "PC"})
+CREATE (game2:Game {name: "Game Y", genre: "Adventure", players: 1, platform: "PlayStation"})
+CREATE (game3:Game {name: "Game Z", genre: "Strategy", players: 4, platform: "Switch"})
+CREATE (game4:Game {name: "Game A", genre: "RPG", players: 1, platform: "PC"})
+CREATE (game5:Game {name: "Game B", genre: "Sports", players: 2, platform: "PlayStation"})
+
+// Create Players
+CREATE (player1:Player {profileName: "Player1", profilePic: "pic1"})
+CREATE (player2:Player {profileName: "Player2", profilePic: "pic2"})
+CREATE (player3:Player {profileName: "Player3", profilePic: "pic3"})
+CREATE (player4:Player {profileName: "Player4", profilePic: "pic4"})
+CREATE (player5:Player {profileName: "Player5", profilePic: "pic5"})
+
+// Create Relationships
+CREATE (player1)-[:PLAYING]->(game1)
+CREATE (player2)-[:PLAYED]->(game2)
+CREATE (player3)-[:WANT_TO_PLAY]->(game3)
+CREATE (player4)-[:PLAYED]->(game1)
+CREATE (player5)-[:PLAYING]->(game4)
+
+CREATE (player1)-[:FRIEND]->(player2)
+CREATE (player1)-[:FRIEND]->(player3)
+CREATE (player2)-[:FRIEND]->(player4)
+CREATE (player3)-[:FRIEND]->(player5)
+CREATE (player4)-[:FRIEND]->(player5)
+
+     
+     
+2.  Show all games belonging to a specific genre (e.g., "Action")
+MATCH (game:Game {genre: "Action"})
+RETURN game.name
+3.  Show all games belonging to a specific genre and platform (e.g., "Adventure" on "PlayStation"):
+MATCH (game:Game {genre: "Adventure", platform: "PlayStation"})
+RETURN game.name
+4. For a specific player (e.g., "Player1"), show all the games that player is currently playing:
+MATCH (player:Player {profileName: "Player1"})-[:PLAYING]->(game:Game)
+RETURN game.name 
+5. For a specific player (e.g., "Player1"), show the names of all that player's friends:
+MATCH (player:Player {profileName: "Player1"})-[:FRIEND]->(friend:Player)
+RETURN friend.profileName
 
 
-1.	Create a database in MongoDB for the scenario.
-use passportApplicationsDB
-db.createCollection("passportApplications")
-2.	Add data to your databaseInsert all the data.
-db.passportApplications.insertMany([
-  {
-    applicationId: 1,
-    applicationDate: ISODate("2023-01-15"),
-    country: "USA",
-    status: "P",
-    issuedDate: ISODate("2023-02-10"),
-    expiryDate: ISODate("2033-02-10"),
-    person: {
-      name: "John",
-      surname: "Doe",
-      birthdate: ISODate("1985-03-20"),
-      nationality: "USA"
-    },
-    documents: {
-      identityDocument: "ID123",
-      proofOfAddress: "Proof456",
-      birthCertificate: "Birth789"
-    }
-  },
-  {
-    applicationId: 2,
-    applicationDate: ISODate("2023-02-20"),
-    country: "Canada",
-    status: "P",
-    person: {
-      name: "Emily",
-      surname: "Smith",
-      birthdate: ISODate("1990-08-12"),
-      nationality: "Canada"
-    },
-    documents: {
-      identityDocument: "ID234",
-      proofOfAddress: "Proof567",
-      birthCertificate: "Birth890"
-    }
-  },
-]);
+In HBase, you can perform operations using the HBase shell. Here are the commands for the requested actions:
 
-Update everyone with nationality “RSA” to “South African”
-db.passportApplications.updateMany(
-  { "person.nationality": "RSA" },
-  { $set: { "person.nationality": "South African" } }
-); 
-4. Write a query to select all applications with a status “P” for pending. Project all fields.
-db.passportApplications.find({ status: "P" });
-5. Change your query from Question 4 to project only the name and surname of the applicant and date of the applications. Remember to suppress the _id field
-db.passportApplications.find({ status: "P" }, { _id: 0, "person.name": 1, "person.surname": 1, applicationDate: 1 }); 
-6. Select all applications with a status “R” for rejected and that were applied for during this year.
-db.passportApplications.find({
-    status: "R",
-    applicationDate: {
-        $gte: ISODate("2023-01-01"),
-        $lt: ISODate("2024-01-01")
-    }
-});
-7. Delete all applications that have a status of D for dormant.
-db.passportApplications.deleteMany({ "status": "D" });
+a) To insert the data for John Lennon into the "musician" table:
 
-1. Create a database in MongoDB for the scenario 
-use libraryDB
-db.createCollection("books")
-2.  Add data to your database 
-	db.books.insertMany([
-  {
-    ISBN: "9781234567890",
-    title: "Book 1",
-    numPages: 200,
-    price: 150,
-    publicationYear: 2020,
-    author: { name: "John", surname: "Doe" }
-  },
-  {
-    ISBN: "9782345678901",
-    title: "Book 2",
-    numPages: 300,
-    price: 80,
-    publicationYear: 2021,
-    author: { name: "Jane", surname: "Smith" }
-  }
-])
+```shell
+put 'musician', 'JohnLennon', 'personal_info:name', 'John Lennon'
+put 'musician', 'JohnLennon', 'personal_info:age', '80'
+put 'musician', 'JohnLennon', 'music_info:band', 'The Beatles'
+put 'musician', 'JohnLennon', 'music_info:instrument', 'Guitar'
+```
 
-3.  The publisher wishes to impose a minimum cost of R100 for a book. Change all books that currently cost less than R100, to R100.
-db.books.updateMany(
-  { price: { $lt: 100 } },
-  { $set: { price: 100 } }
-)
-4. Show only the title of all books that have more than 600 pages
-db.books.find(
-  { numPages: { $gt: 600 } },
-  { title: 1, _id: 0 }
-)
-5. Show the title and price of all books published in 2022
-db.books.find(
-  { publicationYear: 2022 },
-  { title: 1, price: 1, _id: 0 }
-)
-6.  Show all books (titles and publication year) for the author with name “Ken” and surname “Follett”
-db.books.find(
-  { "author.name": "Ken", "author.surname": "Follett" },
-  { title: 1, publicationYear: 1, _id: 0 }
+In the above commands, 'JohnLennon' is used as the row key for John Lennon's data. You can customize the column family and qualifier names to suit your schema.
+
+b) To determine how many rows there are in the "musician" table:
+
+```shell
+count 'musician'
+```
+
+This command will provide the count of rows in the "musician" table.
+
+c) To retrieve the data for John Lennon:
+
+```shell
+get 'musician', 'JohnLennon'
+```
+
+This command will fetch all the data associated with the row key 'JohnLennon' in the "musician" table.
+
+d) To retrieve all data in the "musician" table:
+
+```shell
+scan 'musician'
+```
+
+This command will scan and retrieve all the data from the "musician" table, displaying all rows and their associated data.
+In HBase, you can interact with the database using HBase shell commands. Below are the commands for the given tasks:
+
+a) To insert the data for John Lennon into the "musician" table:
+
+```shell
+put 'musician', 'JohnLennon', 'details:firstName', 'John'
+put 'musician', 'JohnLennon', 'details:lastName', 'Lennon'
+put 'musician', 'JohnLennon', 'details:instrument', 'Guitar'
+put 'musician', 'JohnLennon', 'details:band', 'The Beatles'
+```
+
+This will create a row with the row key 'JohnLennon' in the 'musician' table and populate it with the details of John Lennon.
+
+b) To determine how many rows there are in the "musician" table:
+
+```shell
+count 'musician'
+```
+
+This command will provide the count of rows in the "musician" table.
+
+c) To retrieve the data for John Lennon:
+
+```shell
+get 'musician', 'JohnLennon'
+```
+
+This command will fetch and display the details of John Lennon stored in the "musician" table.
+
+d) To retrieve all data in the "musician" table:
+
+```shell
+scan 'musician'
+```
+
+This command will scan and display all the rows and their data in the "musician" table.
+
+Additional commands you can use in HBase:
+
+- To delete a row for John Lennon:
+
+```shell
+delete 'musician', 'JohnLennon'
+```
+
+- To retrieve specific column family or qualifier data for John Lennon:
+
+```shell
+get 'musician', 'JohnLennon', {COLUMN => 'details:instrument'}
+```
+
+- To update a specific column value for John Lennon:
+
+```shell
+put 'musician', 'JohnLennon', 'details:band', 'John Lennon and The Plastic Ono Band'
+```
+
+- To scan with additional options, such as limiting the number of rows returned:
+
+```shell
+scan 'musician', {LIMIT => 10}
+```
+
+These are some of the basic HBase commands for data insertion, retrieval, and manipulation. You can adapt and use them according to your specific use case.

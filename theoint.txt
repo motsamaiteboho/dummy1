@@ -1,0 +1,144 @@
+Apache Hadoop
+-Hadoop is open-source software for working with big data
+-Platform for distributed computing problems
+-Hadoop uses MapReduce
+-Load data into HDFS
+  -MapReduce operations
+  -Retrieve results from HDFS
+-HDFS
+ -Distributed across nodes in a cluster
+ -Two services: name node and data node
+ -Master-slave relationship
+   -Name node is master and runs on one node
+   -Data node is slave and runs on more than one node
+-Name node
+  -Keeps track of active nodes
+  -Maintains meta data
+  -Manages file system
+  -Balances redundant copies
+-Data nodes
+ -Workhorses of HDFS
+ -Do actual storage of file blocks
+ -Responsible for read and write requests
+ -Periodically send heartbeat to name node
+
+Big data processing: yarn
+-Hadoop processing request
+  -Job split into pieces
+  -Each piece sent to a node
+  -Each node reports on progress
+  -Master combines all results
+-YARN (Yet another resource negotiator)
+  -Resource management and job scheduling
+  -Allocates system resources
+  -Schedules tasks
+
+mapreduce
+-Output of map phase is a set of key-value pairs
+-Output of map phase is input for the reduce phase
+-During reduce, the key-value pairs are aggregated into a smaller set of key-value pairs
+
+-An application using MapReduce needs:
+ -A mapper
+   -Recieves content as key-value pairs
+ -A reducer
+  -Accepts key-value pairs and reduces the list
+ -A configuration to tie things up
+   -This is called a driver
+   -Written in Java
+
+-Combiner
+  -Optional after map phase
+  -Analogous to a reducer in the map phase
+  -Reduces the amount of data sent to the shuffle phase
+
+-Shuffler
+  -After all map tasks are completed
+  -Conducted with the help of a partitioner
+  -Job is to decide which record goes to which node
+  -Output of the shuffle phase is a new data structure that serves as input for reduce phase
+
+-Reducer
+  -Accepts a key and a list of writables
+  -Reduces the list to a single value
+
+Data processing in hadoop (Pig)
+-Writing a MapReduce programme for every analysis that you need to perform will be tiring and require a lot effort
+-Apache Pig 
+  -platform for analysing large data sets 
+  -consists of a high-level language for expressing data analysis programmes
+  -coupled with infrastructure for evaluating these programmes
+
+Pig Latin
+-High level language
+-Consists of statements
+-Each statement is a line of code that is assigned to variable or performs an action
+-Statements made up of variables, operators, expressions and functions
+
+Pig Latin operators
+-Arithmetic operators
+Addition, multiplication, subtraction, division	
+-Comparison operators
+Equal, not equal, greater than, less than
+-Construction operators
+Around tuples is ()
+Bag {}
+Map []
+Three kinds of relational operators
+Loaders: load data sets from storage into a relation
+Transformations: executed on a relation to return another relation
+Actions: execute a relation, trigger all transformations leading up to the last one
+
+Pig Latin functions
+Example eval functions
+AVG, MAX, MIN, COUNT, CONCAT
+Example string functions
+SUBSTRING, INDEXOF
+Example date-time functions
+ToDate,GetDay, GetMinute, GetWeek
+Example Maths functions
+ABS, FLOOR, RANDOM, ROUND
+
+Data processing in hadoop (spark)
+-Apache spark
+Unified engine for large-scale data processing
+High performance for batch and streaming
+Support for Java, Scala, Python, R and SQL
+
+-Resilient Distributed Datasets
+Files are read from a distributed file system as file blocks and presented as file splits
+Each split is a portion of the data and is distributed across nodes
+Resilient means dataset is capable of self-recovery
+
+Spark driver decomposes the application
+After breakdown, tasks are sent to executors
+Sole task of executors is execute tasks
+Spark uses Hadoop IO framework to read and store data in Resilient Distributed Datasets (RDDs)
+
+Data analytics (Spark)
+-Spark SQL
+For structured data processing
+Can convert Spark code into series of SQL statements
+-Spark Streaming
+Enables scalable, high throughput, fault-tolerant live stream processing
+Receives live input data streams, divides data into batches 
+
+-Spark Structured Streaming
+Streaming module built on Spark SQL
+-GraphX
+Module for graph and graph parallel computations
+Primary data abstraction is a graph
+
+
+Apache hive
+Provides abstraction on top of the Hadoop Distributed File System 
+Allows structured files to be queried by an SQL-like query language
+Data warehouse software facilitates reading, writing and managing large datasets residing in distributed storage using SQL
+Clients can connect to Apache Hive server using database drivers
+In order to facilitate the planning and optimisation, Hive will require some metadata – this is obtained from the Hive metastore 
+
+Apache sqoop
+Designed to transfer data between Hadoop and relational database servers
+
+Apache storm
+Makes it easy to reliably process unbounded streams of data
