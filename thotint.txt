@@ -296,3 +296,8 @@ scan 'musician', {LIMIT => 10}
 ```
 
 These are some of the basic HBase commands for data insertion, retrieval, and manipulation. You can adapt and use them according to your specific use case.
+put 'emp','1','personal data:name','raju'
+put 'emp','1','personal data:city','hyderabad'
+put 'emp','1','professionaldata:designation','manager'
+put 'emp','1','professional data:salary','50000'
+
